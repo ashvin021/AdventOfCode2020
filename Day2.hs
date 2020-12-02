@@ -9,14 +9,14 @@ import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.UTF8  as BSU
 import qualified Data.Sequence         as Seq
 
-data PasswordInfo = PasswordInfo { password :: B.ByteString
+data PasswordInfo = PasswordInfo { password :: String
                                  , constrainedChar :: Char
                                  , constraints :: (Int, Int)
                                  } deriving (Show)
 
 ------------------------------------------------------------
 
-parserR 
+policyPattern 
   = compile (BSU.fromString "(\\d{1,3})\\D(\\d{1,3})\\s(\\w):\\s(\\w*)$") []
 
 ------------------------------------------------------------
@@ -30,13 +30,13 @@ getPasswordInfo
 
 parsePasswordInfo :: B.ByteString -> PasswordInfo
 parsePasswordInfo p
-  = PasswordInfo { password        = pass
+  = PasswordInfo { password        = BSU.toString pass
                  , constrainedChar = head $ C.unpack c
                  , constraints     = (read (BSU.toString i) :: Int
                                      ,read (BSU.toString j) :: Int)
                  }
   where
-    (_ : i : j : c : pass : _) = fromJust $ match parserR p []
+    (_ : i : j : c : pass : _) = fromJust $ match policyPattern p []
 
 
 isValidPassword :: PasswordInfo -> Bool
@@ -45,14 +45,14 @@ isValidPassword p
  where
     (lower, upper) = constraints p
     i              = (length . filter (==constrainedChar p)
-                             . BSU.toString . password) p 
+                             . password) p 
 
 
 isValidPassword' :: PasswordInfo -> Bool
 isValidPassword' p
   = xor a b
   where
-    seqPass = (Seq.fromList . BSU.toString . password) p
+    seqPass = (Seq.fromList . password) p
     (i, j)  = constraints p
     c       = constrainedChar p
     a       = Just c == (seqPass Seq.!? (i - 1))
@@ -68,6 +68,7 @@ q1 = length
 q2 = length
    . filter isValidPassword'
    . map parsePasswordInfo
+
 ------------------------------------------------------------
 
 main :: IO ()
