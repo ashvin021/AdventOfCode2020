@@ -22,6 +22,28 @@
   (major1) == 4 && (major2) == 14 && (minor) <= 0)
 #endif /* MIN_VERSION_base */
 
+/* package bytestring-0.10.10.0 */
+#ifndef VERSION_bytestring
+#define VERSION_bytestring "0.10.10.0"
+#endif /* VERSION_bytestring */
+#ifndef MIN_VERSION_bytestring
+#define MIN_VERSION_bytestring(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  10 || \
+  (major1) == 0 && (major2) == 10 && (minor) <= 10)
+#endif /* MIN_VERSION_bytestring */
+
+/* package containers-0.6.2.1 */
+#ifndef VERSION_containers
+#define VERSION_containers "0.6.2.1"
+#endif /* VERSION_containers */
+#ifndef MIN_VERSION_containers
+#define MIN_VERSION_containers(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  6 || \
+  (major1) == 0 && (major2) == 6 && (minor) <= 2)
+#endif /* MIN_VERSION_containers */
+
 /* package criterion-1.5.9.0 */
 #ifndef VERSION_criterion
 #define VERSION_criterion "1.5.9.0"
@@ -32,6 +54,39 @@
   (major1) == 1 && (major2) <  5 || \
   (major1) == 1 && (major2) == 5 && (minor) <= 9)
 #endif /* MIN_VERSION_criterion */
+
+/* package pcre-light-0.4.1.0 */
+#ifndef VERSION_pcre_light
+#define VERSION_pcre_light "0.4.1.0"
+#endif /* VERSION_pcre_light */
+#ifndef MIN_VERSION_pcre_light
+#define MIN_VERSION_pcre_light(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  4 || \
+  (major1) == 0 && (major2) == 4 && (minor) <= 1)
+#endif /* MIN_VERSION_pcre_light */
+
+/* package text-1.2.3.2 */
+#ifndef VERSION_text
+#define VERSION_text "1.2.3.2"
+#endif /* VERSION_text */
+#ifndef MIN_VERSION_text
+#define MIN_VERSION_text(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  2 || \
+  (major1) == 1 && (major2) == 2 && (minor) <= 3)
+#endif /* MIN_VERSION_text */
+
+/* package utf8-string-1.0.1.1 */
+#ifndef VERSION_utf8_string
+#define VERSION_utf8_string "1.0.1.1"
+#endif /* VERSION_utf8_string */
+#ifndef MIN_VERSION_utf8_string
+#define MIN_VERSION_utf8_string(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  0 || \
+  (major1) == 1 && (major2) == 0 && (minor) <= 1)
+#endif /* MIN_VERSION_utf8_string */
 
 /* tool gcc-4.2.1 */
 #ifndef TOOL_VERSION_gcc
