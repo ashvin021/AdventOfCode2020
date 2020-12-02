@@ -1,3 +1,7 @@
+module Day1 where
+
+import Criterion.Main
+import Reusable ( uncurry3, (.:) )
 
 list :: [Int]
 list = [ 2004, 1823, 1628, 1867, 1073, 1951, 1909, 1761
@@ -30,7 +34,10 @@ list = [ 2004, 1823, 1628, 1867, 1073, 1951, 1909, 1761
 
 findSumTo :: Int -> [Int] -> [(Int, Int)]
 findSumTo i list
-  = [ (x, y) | x <- list, y <- list, x + y == i ]
+  = [ (x, y) | x <- list
+             , y <- list
+             , x < y
+             , x + y == i ]
 
 productOfPairs :: [(Int, Int)] -> [Int]
 productOfPairs
@@ -40,15 +47,21 @@ findSumTo3 :: Int -> [Int] -> [(Int, Int, Int)]
 findSumTo3 i list
   = [ (x, y, z) | x <- list 
                 , y <- list
+                , x < y
                 , x + y < i
                 , z <- list
+                , y < z
                 , ((+) .: (+)) x y z == i ]
 
 productOfTriple :: [(Int, Int, Int)] -> [Int]
 productOfTriple
   = map (uncurry3 ((*) .: (*)))
 
-(.:) = (.).(.)
+q1 = head . productOfPairs . findSumTo 2020
+q2 = head . productOfTriple . findSumTo3 2020
 
-uncurry3 :: (a -> b -> c -> d) -> (a, b, c) -> d
-uncurry3 f (x, y, z) = f x y z
+main :: IO ()
+main = defaultMain [
+        bgroup "Day1" [ bench "Q1" $ whnf q1 list
+                      , bench "Q2" $ whnf q2 list]
+                   ]
