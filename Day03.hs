@@ -47,12 +47,15 @@ findPath f@(forest, rowLength) (o, o') toMoveBy
 
 ------------------------------------------------------------
 
-q1 p = sum
-     . map (\x -> if x == Tree then 1 else 0)
+q1 p = length
+     . filter (==Tree)
      . (\x -> findPath x (0, 0) p)
-     . parseMapInfo
 
 q2 c = product $ map (`q1` c) [(1,1), (3,1), (5,1), (7,1), (1,2)]
+
+q1withParse p = q1 p . parseMapInfo
+
+q2withParse   = q2 . parseMapInfo
 
 ------------------------------------------------------------
 
@@ -60,10 +63,15 @@ main :: IO ()
 main
   = do
      content <- getMapInfo
-     print $ q1 (3, 1) content
-     print $ q2 content
+     let forest = parseMapInfo content
+     print $ q1 (3, 1) forest 
+     print $ q2 forest
      defaultMain [
-             bgroup "Day03" [ bench "Q1" $ whnf (q1 (3,1)) content
-                            , bench "Q2" $ whnf q2 content ]
+             bgroup "Day03" [ bench "Q1" $ whnf (q1 (3,1)) forest
+                            , bench "Q1 w/parse"
+                               $ whnf (q1withParse (3,1)) content
+                            , bench "Q2" $ whnf q2 forest 
+                            , bench "Q2 w/parse" 
+                               $ whnf q2withParse content ]  
                  ]
      return ()
