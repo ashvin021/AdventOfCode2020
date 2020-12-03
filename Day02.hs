@@ -24,7 +24,7 @@ policyPattern
 getPasswordInfo :: IO [B.ByteString]
 getPasswordInfo 
   = do
-     contents <- B.readFile "data/day2_input.txt"
+     contents <- B.readFile "data/day02_input.txt"
      return $ C.split '\n' contents
 
 
