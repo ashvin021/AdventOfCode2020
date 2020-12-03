@@ -1,4 +1,4 @@
-module Day1 where
+module Day01 where
 
 import Criterion.Main
 import Reusable ( uncurry3, (.:) )

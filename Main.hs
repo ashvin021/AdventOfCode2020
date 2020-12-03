@@ -1,8 +1,8 @@
 module Main where
 
--- import Day1 ()
-import Day2 ()
-import Day3 ()
+-- import Day01 ()
+import Day02 ()
+import Day03 ()
 
 main :: IO ()
 main = putStrLn "Hello Haskell! :))"
