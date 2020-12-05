@@ -27,15 +27,13 @@ getSeatID (row, column)
 
 ------------------------------------------------------------
 
-seatIDs = map (getSeatID . getPosition)
-
 q1 :: [BoardingPass] -> Int
-q1 = maximum . seatIDs
+q1 = maximum . map (getSeatID . getPosition) 
 
 q2 :: [BoardingPass] -> Int
 q2 ps = sum [min..max] - sum seatIDs
   where
-    seatIDs = map (getSeatID . getPosition) ps
+    seatIDs    = map (getSeatID . getPosition) ps
     (max, min) = (maximum seatIDs, minimum seatIDs)
 
 ------------------------------------------------------------
