@@ -13,19 +13,13 @@ getInput
      contents <- readFile "data/day06_input.txt"
      return $ lines contents
 
-formInputPerGroup :: [String] -> [[String]]
-formInputPerGroup = splitWhen (=="")
-
-intersection :: Eq a => [[a]] -> [a]
-intersection = foldr1 intersect
-
 ------------------------------------------------------------
 
 q1 :: [String] -> Int
-q1 = sum . map (length . nubOrd . concat) . formInputPerGroup
+q1 = sum . map (length . nubOrd . concat) . splitWhen (=="")
 
 q2 :: [String] -> Int
-q2 = sum . map (length . nubOrd . intersection) . formInputPerGroup
+q2 = sum . map (length . foldr1 intersect) . splitWhen (=="")
 
 ------------------------------------------------------------
 
@@ -35,6 +29,6 @@ main = do
         print $ q1 contents
         print $ q2 contents
         defaultMain [
-                bgroup "Day06" [ bench "Q1" $ whnf q1 contents
-                                , bench "Q2" $ whnf q2 contents ]
+                bgroup "Day06" [ bench "Q1" $ nf q1 contents
+                               , bench "Q2" $ nf q2 contents ]
                     ]
