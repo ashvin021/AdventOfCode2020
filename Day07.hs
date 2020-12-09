@@ -42,7 +42,7 @@ parseInputToGraph xs
                                   return (fst ps, i)) cs
 
 
-maxContained :: Gr String Int -> Int -> Int  
+maxContained :: Gr String Int -> Node -> Int  
 maxContained gr n
   = containedIn n - 1
   where
