@@ -30,6 +30,7 @@ library
                        containers ^>= 0.6.2.1,
                        vector ^>= 0.12.1.2,
                        split ^>= 0.2.3.4,
-                       fgl ^>= 5.7.0.3
+                       fgl ^>= 5.7.0.3,
+                       utility-ht ^>= 0.0.15
   -- hs-source-dirs:
   default-language:    Haskell2010
