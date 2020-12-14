@@ -11,11 +11,11 @@ import qualified Data.Map as M
 type Mask = String
 type Address = Int
 
+------------------------------------------------------------
+
 getInput :: IO String
 getInput = readFile "data/day14_input.txt"
    
-
-
 parseInput :: String -> [(Mask, [(Address, Int)])]
 parseInput xs
   = map parseSection sections
@@ -24,13 +24,12 @@ parseInput xs
     
     parseSection :: String -> (Mask, [(Address, Int)])
     parseSection xs'
-      = (mask, zipWith (curry (bimap r r)) addresses values)
+      = (mask, zipWith (curry (bimap read read)) addresses values)
       where
         (mask : values) = map (dropWhile (not . isAlphaNum) . dropWhile (/='=')) 
                         $ lines xs'
         addresses       = map (takeWhile (/=']') . tail . dropWhile (/='[')) 
                         . drop 1 $ lines xs'
-        r               = read
 
 applyMask :: Mask -> Int -> Int
 applyMask mask 
@@ -68,10 +67,6 @@ getXBits ps
     addLeading0s bins
       | length bins == length ps = bins
       | otherwise                = addLeading0s (0 : bins)
-
-toBin 0 = [0]
-toBin 1 = [1]
-toBin n = let (q, r) = n `divMod` 2 in toBin q ++ [r]
 
 applyMaskToVals :: (Mask, [(Address, Int)]) -> [(Address, Int)]
 applyMaskToVals (mask, xs)
