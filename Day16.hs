@@ -34,7 +34,6 @@ instance {-# OVERLAPPING #-} Show Constraint where
 getInput :: IO String
 getInput = readFile "data/day16_input.txt"
 
-
 parseInput :: String -> TicketData
 parseInput str
   = TD { constraints = constraints, myTicket = myT, otherTickets = otherTs }
@@ -44,10 +43,8 @@ parseInput str
     myT              = parseTicket (t !! 1)
     otherTs          = map parseTicket (tail ts)
 
-
 parseTicket :: String -> Ticket
 parseTicket = map read . splitWhen (==',')
-
 
 parseConstraint :: String -> Constraint
 parseConstraint xs
@@ -59,13 +56,13 @@ parseConstraint xs
     (nums , xs') = getNums xs
     (nums', _  ) = getNums xs'
 
-
 generateConstraint :: String -> (Int, Int) -> (Int, Int) -> Constraint
 generateConstraint name (a, b) (c, d)
   = (name, f)
   where
     f = \n -> (n >= a && n <= b) || (n >= c && n <= d)
 
+---------------------------------------------------------------------------
 
 invalidFields :: TicketData -> [Int]
 invalidFields t
@@ -73,25 +70,20 @@ invalidFields t
   where
     isFieldInvalid = not . isFieldValid (constraints t)
 
-
 validTickets :: TicketData -> [Ticket]
 validTickets t 
   = filter (all $ isFieldValid (constraints t)) $ otherTickets t
     
-
 isFieldValid :: [Constraint] -> Int -> Bool
 isFieldValid cs = or . mapM snd cs
 
-
 isFieldValid' :: [Constraint] -> Int -> [Maybe Constraint]
 isFieldValid' cs n = map (`isValidFor` n) cs 
-
 
 isValidFor :: Constraint -> Int -> Maybe Constraint
 isValidFor c@(_, f) n
   | f n       = Just c
   | otherwise = Nothing
-
 
 matchFields :: TicketData -> M.Map Constraint Int
 matchFields t
@@ -113,14 +105,12 @@ matchFields t
         newMap          = M.insert (head c) i m
         newCs           = cs \\ c
 
-
 myDepartureValues :: TicketData -> M.Map Constraint Int -> [Int]
 myDepartureValues t m
   = map (myT !!) $ M.elems departureFields
   where
     myT = myTicket t
     departureFields = M.filterWithKey (\k _ -> "departure" `isPrefixOf` fst k) m
-    
     
 ---------------------------------------------------------------------------
 
@@ -131,6 +121,8 @@ q1 = sum
 q2 = product
    . (\t -> myDepartureValues t (matchFields t))
    . parseInput
+
+---------------------------------------------------------------------------
 
 main :: IO ()
 main = do
