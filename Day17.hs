@@ -44,14 +44,16 @@ conway4D h
     ns = filter (=='#') . delete e $ neighboursHCube h
     l  = length ns
 
-q1 = (!! 6)
+q1 = numberActiveCube
+   . (!! 6)
    . map (toFiniteCube 20 20 20)
    . build conway3D
    . getCubeFromStrings
    . (:[])
    . lines
 
-q2 = toFiniteHCube 20 20 20 20
+q2 = numberActiveHCube
+   . toFiniteHCube 20 20 20 20
    . (!! 6)
    . build conway4D
    . getHCubeFromStrings
@@ -63,7 +65,5 @@ q2 = toFiniteHCube 20 20 20 20
 main :: IO ()
 main = do
         content <- getInput
---        print $ q1 content
-        let hcube = q2 content
-        print hcube
-        print $ numberActiveHCube hcube
+        print $ q1 content
+        print $ q2 content
