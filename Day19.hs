@@ -2,20 +2,13 @@
 
 module Day19 where
 
-import Data.List ( isPrefixOf, (\\))
-import Data.List.Split ( splitOn, splitWhen )
+-- import Data.List ( isPrefixOf, (\\))
+-- import Data.List.Split ( splitOn, splitWhen )
 import Data.Char ( isDigit )
-import Control.Monad
 import Text.ParserCombinators.ReadP
 import qualified Data.IntMap as IM
 
 ---------------------------------------------------------------------------
-
-data Rule' = Rule'  String
-           | Index' Int
-           | And'   Rule' Rule'
-           | Or'    Rule' Rule'
-           deriving (Show)
 
 data Rule = Rule   String
           | Index  Int
@@ -23,28 +16,32 @@ data Rule = Rule   String
           | Or     [Rule]
           deriving Show
 
+data Question = Q1 | Q2 deriving Show
 type RuleMap = IM.IntMap Rule
-type RuleMap' = IM.IntMap Rule'
-type RuleIndex = Int
 
 ---------------------------------------------------------------------------
 
-getInput :: IO String
-getInput = readFile "data/day19_test.txt"
+getInput :: Question -> IO String
+getInput Q1 = readFile "data/day19a_input.txt"
+getInput Q2 = readFile "data/day19b_input.txt"
 
 parse :: ReadP a -> String -> a
 parse parser 
   = fst . head . readP_to_S parser
 
-ruleToParser :: RuleMap -> Rule -> ReadP Bool
-ruleToParser _ (Rule x)
-  = (string x >> return True) <++ return False
-ruleToParser rm (Index i)
-  = ruleToParser rm (rm IM.! i)
-ruleToParser rm (And rs)
-  = foldl1 (>>) $ map (ruleToParser rm) rs
-ruleToParser rm (Or rs)
-  = choice $ map (ruleToParser rm) rs
+ruleToParser :: RuleMap -> Rule -> Int -> ReadP Bool
+ruleToParser rm rule n
+  = (ruleToParser' rm rule n >> eof >> return True) <++ return False
+
+ruleToParser' :: RuleMap -> Rule -> Int -> ReadP String
+ruleToParser' _ (Rule x) _
+  = string x
+ruleToParser' rm (Index i) n
+  = ruleToParser' rm (rm IM.! i) n
+ruleToParser' rm (And rs) n
+  = foldl1 (>>) . take n $ map (\r -> ruleToParser' rm r n) rs
+ruleToParser' rm (Or rs) n
+  = choice . take n $ map (\r -> ruleToParser' rm r n) rs
 
 parseInt :: ReadP Int
 parseInt = read <$> munch1 isDigit
@@ -72,33 +69,50 @@ ruleParser = do
         index <- parseInt
         string ": "
         rule <- ruleExpParser
-        char '\n'
         return (index, rule)
 
 parser :: ReadP (IM.IntMap Rule, [String])
 parser = do
-        rules <- many1 ruleParser
-        string "\n" 
+        rules <- sepBy1 ruleParser (char '\n')
+        string "\n\n" 
         input <- sepBy1 (munch1 (/='\n')) (char '\n') 
         return (IM.fromList rules, input)
 
+---------------------------------------------------------------------------
+
 q1 raw
-  = map (readP_to_S zeroParser) input
+  = length . filter (==True) 
+  $ map (parse $ zeroParser maxLength) input
   where
     (im, input) = parse (parser <* eof) raw
-    zeroParser  = ruleToParser im (Index 1) <* eof
+    zeroParser  = ruleToParser im (Index 0)
+    maxLength   = maximum $ map length input
 
+q2 = q1
 
-q2 = undefined
+---------------------------------------------------------------------------
 
 main :: IO ()
 main = do
-        raw <- getInput
-        print $ q1 raw
+        r  <- getInput Q1
+        r' <- getInput Q2
+        print $ q1 r
+        print $ q2 r'
 
 
 
+-- Initial non-monadic implementation with recursion
+--
 {-
+
+data Rule' = Rule'  String
+           | Index' Int
+           | And'   Rule' Rule'
+           | Or'    Rule' Rule'
+           deriving (Show)
+
+type RuleMap' = IM.IntMap Rule'
+
 parseInput :: String -> (RuleMap', [String])
 parseInput str
   = (ruleMap, xs)
@@ -171,8 +185,6 @@ matches0 rm xs
     rules        = [ And' x y | x <- rule8matches, y <- rule11' ]
 
 
----------------------------------------------------------------------------
-
 q1 c
   = length $ filter (matchesQ1 im 0) xs
   where
@@ -182,7 +194,4 @@ q2 c
   = length $ filter (matchesQ2 im 0) xs
   where
     (im, xs) = parseInput c
-
 -}
----------------------------------------------------------------------------
-
